@@ -31,6 +31,8 @@ uint8_t const LS_SIZE = 2;
 uint8_t const LS_R = 4;
 
 class File {
+  private:
+    File(FRESULT);
   public:
     File(void);
     virtual size_t write(uint8_t);
@@ -72,6 +74,9 @@ class File {
     char *_name = NULL; //file or dir name
     FIL *_fil = NULL; // underlying file object structure pointer
     DIR _dir = {}; // init all fields to 0
+    FRESULT _res = FR_OK;
+
+    FRESULT getErrorstate(void) {return _res;}
 
 };
 
