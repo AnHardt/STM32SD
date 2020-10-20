@@ -149,10 +149,12 @@ File SDClass::open(const char *filepath, uint8_t mode /* = FA_READ */)
     mode = mode | FA_CREATE_ALWAYS;
   }
 
-  if (f_open(file._fil, filepath, mode) != FR_OK) {
+  file._res = f_open(file._fil, filepath, mode);
+  if ( file._res != FR_OK) {
     free(file._fil);
     file._fil = NULL;
-    if (f_opendir(&file._dir, filepath) != FR_OK) {
+    file._res = f_opendir(&file._dir, filepath);
+    if (file._res != FR_OK) {
       free(file._name);
       file._name = NULL;
     }
@@ -178,7 +180,8 @@ File SDClass::openRoot(void)
 {
   File file = open(_fatFs.getRoot());
 
-  if (f_opendir(&file._dir, _fatFs.getRoot()) != FR_OK) {
+  file._res = f_opendir(&file._dir, _fatFs.getRoot());
+  if (file._res != FR_OK) {
 #if _FATFS == 68300
     file._dir.obj.fs = 0;
 #else
@@ -188,10 +191,18 @@ File SDClass::openRoot(void)
   return file;
 }
 
-File::File()
+File::File(FRESULT result)
 {
   _name = NULL;
   _fil = NULL;
+  _res = = result;
+}
+
+File::File(void)
+{
+  _name = NULL;
+  _fil = NULL;
+  _res = = FR_OK;
 }
 
 /** List directory contents to Serial.
@@ -604,7 +615,7 @@ File File::openNextFile(uint8_t mode)
   while (1) {
     res = f_readdir(&_dir, &fno);
     if (res != FR_OK || fno.fname[0] == 0) {
-      return File();
+      return File(res);
     }
     if (fno.fname[0] == '.') {
       continue;
@@ -627,7 +638,7 @@ File File::openNextFile(uint8_t mode)
       free(fullPath);
       return filtmp;
     } else {
-      return File();
+      return File(FR_NOT_ENOUGH_CORE);
     }
   }
 }
