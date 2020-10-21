@@ -195,14 +195,14 @@ File::File(FRESULT result)
 {
   _name = NULL;
   _fil = NULL;
-  _res = = result;
+  _res = result;
 }
 
 File::File(void)
 {
   _name = NULL;
   _fil = NULL;
-  _res = = FR_OK;
+  _res = FR_OK;
 }
 
 /** List directory contents to Serial.

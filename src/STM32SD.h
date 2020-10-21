@@ -76,7 +76,7 @@ class File {
     DIR _dir = {}; // init all fields to 0
     FRESULT _res = FR_OK;
 
-    FRESULT getErrorstate(void) {return file._res;}
+    FRESULT getErrorstate(void) {return _res;}
 
 };
 
